@@ -6,6 +6,7 @@ import biweekly.component.VEvent;
 import biweekly.property.CalendarScale;
 import biweekly.property.Classification;
 import com.alibaba.fastjson.JSONArray;
+import org.json.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -649,6 +650,26 @@ public interface BizAction {
      * 查询任务
      */
     Map<String, Object> getTaskInfoByUuid(String token, String uuid);
+
+
+    /**
+     * 修改任务
+     */
+    Map<String, Object> saveTaskInfo(String token,TaskDetailInfo bean,String saveName);
+
+    /**
+     * 删除存档
+     */
+    void delTaskSave(String token,int savaId);
+
+    /**
+     * 使用存档
+     */
+    void useTaskSaveById(String token,int savaId);
+    /**
+     * 获取任务下的存档信息
+     */
+    List<TaskSave> getTaskSaveList(String token,int taskId);
 
     /***/
     TaskSimpleInfo getTaskSimpleInfoByUuid(String token, String uuid);
@@ -9323,6 +9344,7 @@ public interface BizAction {
                     @Override
                     public void afterCommit() {
                         logger.info("afterCommit");
+                        // 这里是增加修改事件
                         WebEvent event = WebEvent.createWebEvent(account.id, account.companyId, WebEvent.TYPE_创建任务,
                                 task.objectType, task.projectId, task.id);
                         CornerstoneBizSystem.webEventServer.boardcastAsync(event);
@@ -9729,8 +9751,8 @@ public interface BizAction {
         @Override
         public void updateTask(String token, TaskDetailInfo bean, List<String> updateFields, boolean isManualUpdate) {
             Account account = bizService.getExistedAccountByToken(token);
-            TaskInfo task = bizService.updateTask0(account, bean, updateFields, false, isManualUpdate);
-            //
+//            TaskInfo task = bizService.updateTask0(account, bean, updateFields, false, isManualUpdate);
+            TaskInfo task = bizService.updateTaskAdmin(account, bean, updateFields, false, isManualUpdate);
             if (task != null) {
                 if (CornerstoneBizSystem.webEventServer != null) {
                     AutoTranscationCallback.registerSynchronization(new TransactionSynchronizationAdapter() {
@@ -9744,7 +9766,7 @@ public interface BizAction {
                 }
             }
         }
-        //
+
 
         @Transaction
         @Override
@@ -10174,6 +10196,54 @@ public interface BizAction {
             }
             bizService.checkTaskViewPermission(account, info);
             return TaskSimpleInfo.createTaskSimpleinfo(info);
+        }
+
+
+
+        // 读取任务存档列表
+        @Transaction
+        @Override
+        public List<TaskSave> getTaskSaveList(String token,int taskId) {
+            Account account = bizService.getExistedAccountByToken(token);
+            return bizService.getTaskSaveListById(taskId);
+        }
+
+        // 读取任务存档列表
+        @Transaction
+        @Override
+        public void useTaskSaveById(String token,int savaId) {
+            // 用saveId读取出存档数据，然后直接覆盖
+            TaskSave taskSave = bizService.getTaskSaveById(savaId);
+            TaskDetailInfo taskDetailInfo = JSONUtil.fromJson(taskSave.saveData,TaskDetailInfo.class);
+            taskDetailInfo.id = taskSave.taskId;
+            List<String> list = new ArrayList<String>();
+            //["name","ownerAccountIdList","status","priority","categoryIdList","startDate","endDate","iterationId","content"]
+            list.add("name");
+            list.add("ownerAccountIdList");
+            list.add("status");
+            list.add("priority");
+            list.add("categoryIdList");
+            list.add("iterationId");
+            list.add("content");
+            updateTask(token,taskDetailInfo,list,true);
+        }
+
+        // 删除存档数据
+        @Transaction
+        @Override
+        public void delTaskSave(String token,int savaId) {
+            bizService.delTaskSaveById(savaId);
+        }
+
+        @Transaction
+        @Override
+        public Map<String, Object> saveTaskInfo(String token,TaskDetailInfo bean,String saveName) {
+            Account account = bizService.getExistedAccountByToken(token);
+            // 修改项目信息，直接调用之前的DAO进行数据库操作
+            // 把传入的信息转换为json
+            String jsonStr = JSONUtil.toJson(bean);
+            bizService.createTaskSave(account,jsonStr,saveName,bean.id);
+            return null;
         }
 
         @Override

@@ -1,10 +1,6 @@
 package cornerstone.biz;
 
-/**
- * 
- * @author cs
- *
- */
+
 public class NotificationEvent {
 	//
 	public static final String Notification_新增用户="ITFBossAction.addUser";

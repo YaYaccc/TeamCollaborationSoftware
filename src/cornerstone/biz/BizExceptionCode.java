@@ -1,9 +1,6 @@
 package cornerstone.biz;
 
-/**
- * @author rao
- *
- */
+
 public class BizExceptionCode{
 	//
 	public static final int CODE_用户名或密码错误 = 100001;

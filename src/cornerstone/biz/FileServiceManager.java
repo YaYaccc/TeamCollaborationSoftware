@@ -7,11 +7,6 @@ import cornerstone.biz.srv.FileService;
 import cornerstone.biz.srv.LocalFileService;
 import cornerstone.biz.util.StringUtil;
 
-/**
- * 
- * @author cs
- *
- */
 public class FileServiceManager {
 	//
 	public static final String TYPE_COS="cos";//默认cos

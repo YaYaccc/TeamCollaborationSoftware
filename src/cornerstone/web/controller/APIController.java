@@ -20,6 +20,7 @@ public class APIController extends ProxyController {
 	public APIController() {
 		//
 		JazminRpcDriver rpcServer = Jazmin.getDriver(JazminRpcDriver.class);
+		// 在这里注册API信息
 		registerProxyTarget(rpcServer.create(BizAction.class, CornerstoneBizSystem.class.getSimpleName()));
 		registerProxyTarget(rpcServer.create(DesignerAction.class, CornerstoneBizSystem.class.getSimpleName()));
 		registerProxyTarget(rpcServer.create(DataTableAction.class, CornerstoneBizSystem.class.getSimpleName()));

@@ -1,10 +1,6 @@
 package cornerstone.biz;
 
-/**
- * 常量定义
- * @author cs
- *
- */
+
 public class ConstDefine {
 
 	//

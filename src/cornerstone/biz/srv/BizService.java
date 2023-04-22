@@ -1773,6 +1773,28 @@ public class BizService extends CommService {
         return createTask(account, bean, true, false);
     }
 
+    public TaskSave createTaskSave(Account account, String data,String saveName,int taskId) {
+        TaskSave taskSave = new TaskSave();
+        taskSave.taskId = taskId;
+        taskSave.accountId = account.id;
+        taskSave.saveName = saveName;
+        taskSave.saveData = data;
+        dao.add(taskSave);
+        return taskSave;
+    }
+
+    // 删除存档数据 逻辑删除
+    public boolean delTaskSaveById(int taskId) {
+        dao.deleteById(TaskSave.class,taskId); // 硬删除吧 懒得想
+        return true;
+    }
+
+    public List<TaskSave> getTaskSaveListById(int taskId) {
+        String sql = "select * from t_task_save where task_id = ?";
+        List<TaskSave> list = dao.queryList(TaskSave.class,sql,taskId);
+        return list;
+    }
+
     //
     public TaskDetailInfo createTask(Account account, TaskDetailInfo bean, boolean needCheckCustomerFiled, boolean isImportCreate) {
         if (!isImportCreate) {
@@ -2261,6 +2283,13 @@ public class BizService extends CommService {
     public TaskInfo updateTask0(Account account, TaskDetailInfo bean, List<String> updateFields, boolean isBatchUpdate, boolean isManualUpdate) {
         preUpdateTask(account, bean);
         TaskInfo task = doUpdateTask(account, bean, updateFields, isBatchUpdate, isManualUpdate, false);
+        postUpdateTask(account, task);
+        return task;
+    }
+
+    public TaskInfo updateTaskAdmin(Account account, TaskDetailInfo bean, List<String> updateFields, boolean isBatchUpdate, boolean isManualUpdate) {
+        preUpdateTask(account, bean);
+        TaskInfo task = doUpdateTask(account, bean, updateFields, isBatchUpdate, isManualUpdate, true);
         postUpdateTask(account, task);
         return task;
     }

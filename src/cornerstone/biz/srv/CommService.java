@@ -721,6 +721,11 @@ public class CommService {
         return account;
     }
 
+    public TaskSave getTaskSaveById(int saveId) {
+        TaskSave taskSave = dao.getById(TaskSave.class,saveId);
+        return taskSave;
+    }
+
     public Account getAccountByToken(String token) {
         if (StringUtil.isEmptyWithTrim(token)) {
             return null;

@@ -6,11 +6,7 @@ import java.util.concurrent.Executors;
 import jazmin.log.Logger;
 import jazmin.log.LoggerFactory;
 
-/**
- * 
- * @author cs
- *
- */
+
 public class CornerstoneThreadFactory {
 	//
 	private static Logger logger=LoggerFactory.get(CornerstoneThreadFactory.class);

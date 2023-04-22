@@ -7,10 +7,7 @@ import jazmin.server.web.mvc.View;
 
 import java.io.IOException;
 
-/**
- * @author yama
- * 8 Jan, 2015
- */
+
 public class ErrorViewUtf8 implements View{
 	//
 	private int code;

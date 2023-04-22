@@ -285,7 +285,7 @@ public class CornerstoneBizSystem extends Application {
         String dbUrl = null;
         String dbDriverClass = null;
         DruidConnectionDriver driver = new DruidConnectionDriver();
-        try (InputStream input = new FileInputStream("/Users/shijushen/Desktop/item/毕业设计/协作化办公管理系统/cooperate/CornerstoneBizSystem/local.properties")) {
+        try (InputStream input = new FileInputStream("D:\\Code\\Java\\cooperate\\CornerstoneBizSystem\\local.properties")) {
             Properties prop = new Properties();
             prop.load(input);
             dbUser = BizUtil.null2String(prop.getProperty("dbUser"));
